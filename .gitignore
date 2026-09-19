@@ -1,0 +1,18 @@
+# Vivado Temporary & Log Files
+*.jou
+*.log
+*.str
+*.backup.*
+*.pb
+*.dcp
+.Xil/
+.vivado_user_data/
+dfx_runtime.txt
+
+# Vivado build caches and run directories
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+vivado_lp_project/LFSR_LP_BIST_ALU.sim/
+vivado_lp_project/*.rpt

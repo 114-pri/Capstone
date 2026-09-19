@@ -1,0 +1,9 @@
+{
+    "git.ignoreLimitWarning": true,
+    "window.autoDetectColorScheme": false,
+    "window.density.editorTabHeight": "compact",
+    "workbench.preferredDarkColorTheme": "Monokai Dimmed",
+    "workbench.preferredHighContrastColorTheme": "Abyss",
+    "workbench.colorTheme": "Visual Studio Dark",
+    "workbench.editor.decorations.colors": true
+}
