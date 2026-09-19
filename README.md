@@ -95,3 +95,20 @@ To generate a fresh project, run behavioral simulation, logic synthesis, place-a
 ```powershell
 & "E:\vivado\2025.2\Vivado\bin\vivado.bat" -mode batch -source scripts/create_project.tcl
 ```
+
+---
+
+## GitHub Setup & Real-Time Auto-Sync
+
+### Initial Setup & Upload to GitHub
+To link or create a new GitHub repository and perform the initial push:
+- Double-click [`setup_and_push_to_github.bat`](setup_and_push_to_github.bat) (or run `.\setup_and_push_to_github.bat` in PowerShell).
+- This launches the setup wizard, logs into GitHub via your browser (one-time authorization), creates the remote repository on your GitHub account, and pushes the initial commit.
+
+### Real-Time Background Auto-Sync
+To automatically push changes to GitHub whenever you edit or save files:
+- Double-click [`start_auto_sync.bat`](start_auto_sync.bat) (or run `.\start_auto_sync.bat`).
+- It monitors your files in the background, debounces saves (7-second window), and automatically runs `git add`, `git commit`, and `git push` to your GitHub repository.
+
+### Manual Push Shortcut
+- Double-click [`push_to_github.bat`](push_to_github.bat) to manually stage, commit, and push changes on demand.
