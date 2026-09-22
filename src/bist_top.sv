@@ -1,10 +1,4 @@
 // Top-Level Workload-Aware Low-Power BIST (WA-LP-BIST) Module for 32-Bit RISC-V RV32I ALU.
-// Supports 3 selectable test modes:
-//   - Mode 2'b00: Standard Baseline LFSR (Uniform pseudo-random)
-//   - Mode 2'b01: Classic Abu-Issa Bit-Swapping LFSR (BS-LFSR)
-//   - Mode 2'b10: Proposed Workload-Aware BIST (CoreMark/Dhrystone-Correlated WA-LP-BIST)
-// Optimized to 91 I/O pins, comfortably fitting the 106-pin Artix-7 cpg236 FPGA package.
-
 module bist_top #(
     parameter int unsigned TEST_CYCLES    = 255,
     parameter logic [31:0] GOLDEN_SIG_STD = 32'ha03133e1,
@@ -15,11 +9,12 @@ module bist_top #(
     input  logic        reset,
     input  logic        start,
     input  logic [1:0]  bist_mode,             // 00: STD, 01: BS-LFSR, 10: Proposed WA-BIST
+    input  logic [1:0]  profile_select,        // 00: Uniform, 01: CoreMark, 10: Logic, 11: Shift
     input  logic        fault_enable,
-    input  logic [1:0]  fault_type,             // 00: None, 01: SA0, 10: SA1
-    input  logic [4:0]  fault_select,           // Output pin bit 0..31
-    input  logic        fault_is_internal,      // 0: Output fault, 1: Internal gate fault
-    input  logic [1:0]  fault_internal_target,  // 00: Carry-16, 01: Shifter-St2, 10: CompSign
+    input  logic [1:0]  fault_type,            
+    input  logic [4:0]  fault_select,          
+    input  logic        fault_is_internal,     
+    input  logic [1:0]  fault_internal_target, 
     output logic        pass,
     output logic        fail,
     output logic        test_done,
@@ -27,7 +22,11 @@ module bist_top #(
     output logic [31:0] total_transitions,
     output logic [7:0]  peak_transitions
 );
-    // Internal interconnects
+    // Internal interconnects and hierarchical testbench access points
+    logic        fault_injection_valid;
+    logic        fault_detection_valid;
+    logic [2:0]  current_phase;
+    logic [31:0] phase_transitions [6];
     logic        lfsr_seed_load, lfsr_step;
     logic        misr_reset, misr_capture;
     logic        monitor_clear, monitor_sample;
@@ -41,10 +40,16 @@ module bist_top #(
     logic [31:0] active_golden_signature;
     logic [31:0] raw_lfsr_internal;
 
-    // Internal gate fault injection control
     logic        inject_internal_fault;
     logic [1:0]  internal_fault_type;
     logic [1:0]  internal_fault_target;
+
+    logic        power_aware_mode;
+    logic        fault_boost_mode;
+    logic        coverage_stagnated;
+    logic [15:0] total_injected;
+    logic [15:0] total_detected;
+    logic [7:0]  last_cycle_transitions;
 
     always_comb begin
         case (bist_mode)
@@ -55,7 +60,30 @@ module bist_top #(
         endcase
     end
 
-    // 1. 3-Mode Pattern Generator (STD, Abu-Issa BS, Proposed Workload-Aware)
+    // Adaptive Controller
+    adaptive_controller u_adaptive (
+        .clk(clk),
+        .reset(reset || lfsr_seed_load),
+        .enable(lfsr_step),
+        .wsa_total(total_transitions),
+        .wsa_peak(peak_transitions),
+        .coverage_stagnated(coverage_stagnated),
+        .power_aware_mode(power_aware_mode),
+        .fault_boost_mode(fault_boost_mode)
+    );
+
+    // Fault Coverage Monitor
+    fault_coverage_monitor u_fc_monitor (
+        .clk(clk),
+        .reset(reset || lfsr_seed_load),
+        .fault_injection_valid(fault_injection_valid),
+        .fault_detection_valid(fault_detection_valid),
+        .total_injected(total_injected),
+        .total_detected(total_detected),
+        .coverage_stagnated(coverage_stagnated)
+    );
+
+    // 1. 3-Mode Pattern Generator (STD, Abu-Issa BS, Proposed WA)
     lt_lfsr_32bit u_lfsr (
         .clk(clk),
         .reset(reset),
@@ -63,24 +91,29 @@ module bist_top #(
         .enable(lfsr_step),
         .bist_mode(bist_mode),
         .seed(32'h00000001),
+        .power_aware_mode(power_aware_mode),
+        .fault_boost_mode(fault_boost_mode),
+        .profile_select(profile_select),
         .pattern_a(alu_a),
         .pattern_b(alu_b),
         .pattern_op(alu_op),
         .raw_lfsr(raw_lfsr_internal)
     );
 
-    // 2. Hardware Transition / WSA Monitor
-    wsa_monitor u_wsa (
+    // 2. Hardware Transition / WSA Monitor (Enhanced)
+    enhanced_wsa_monitor u_wsa (
         .clk(clk),
         .reset(reset),
         .clear(monitor_clear),
         .sample_enable(monitor_sample),
+        .current_phase(current_phase),
         .vector_a(alu_a),
         .vector_b(alu_b),
         .vector_op(alu_op),
         .total_transitions(total_transitions),
         .peak_transitions(peak_transitions),
-        .last_cycle_transitions()
+        .last_cycle_transitions(last_cycle_transitions),
+        .phase_transitions(phase_transitions)
     );
 
     // 3. Circuit Under Test: 32-bit RISC-V RV32I ALU with Internal Net Fault Hooks
@@ -132,6 +165,7 @@ module bist_top #(
         .reset(reset),
         .start(start),
         .signature_match(signature_match),
+        .fault_boost_mode(fault_boost_mode),
         .lfsr_seed_load(lfsr_seed_load),
         .lfsr_step(lfsr_step),
         .misr_reset(misr_reset),
@@ -140,6 +174,7 @@ module bist_top #(
         .monitor_sample(monitor_sample),
         .test_done(test_done),
         .pass(pass),
-        .fail(fail)
+        .fail(fail),
+        .current_phase(current_phase)
     );
 endmodule

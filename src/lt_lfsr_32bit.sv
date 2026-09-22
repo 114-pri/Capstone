@@ -12,6 +12,9 @@ module lt_lfsr_32bit (
     input  logic        enable,
     input  logic [1:0]  bist_mode,
     input  logic [31:0] seed,
+    input  logic        power_aware_mode,
+    input  logic        fault_boost_mode,
+    input  logic [1:0]  profile_select,
     output logic [31:0] pattern_a,
     output logic [31:0] pattern_b,
     output logic [3:0]  pattern_op,
@@ -25,10 +28,8 @@ module lt_lfsr_32bit (
     logic        feedback;
     logic [3:0]  sub_counter;
 
-    // Configurable active seed (defaults to input seed, testbench can set for Monte Carlo)
     logic [31:0] active_seed = 32'h00000001;
 
-    // Maximal-length feedback for x^32 + x^22 + x^2 + x + 1
     always_comb begin
         feedback = lfsr_reg[31] ^ lfsr_reg[21] ^ lfsr_reg[1] ^ lfsr_reg[0];
     end
@@ -45,13 +46,9 @@ module lt_lfsr_32bit (
 
     assign raw_lfsr = lfsr_reg;
 
-    // -------------------------------------------------------------------------
-    // 1. Bit-Swapping Logic (Abu-Issa Style)
-    // -------------------------------------------------------------------------
-    logic [31:0] swapped_a;
-    logic [31:0] swapped_b;
+    // 1. Bit-Swapping Logic
+    logic [31:0] swapped_a, swapped_b;
     logic        swap_control;
-
     assign swap_control = lfsr_reg[0] ^ sub_counter[1];
 
     always_comb begin
@@ -67,12 +64,8 @@ module lt_lfsr_32bit (
         swapped_b = {swapped_a[15:0], swapped_a[31:16]} ^ 32'hA5A55A5A;
     end
 
-    // -------------------------------------------------------------------------
-    // 2. Interleaved Bank Registers (Proposed WA-LP-BIST)
-    // -------------------------------------------------------------------------
-    logic [31:0] lp_a_reg;
-    logic [31:0] lp_b_reg;
-
+    // 2. Interleaved Bank Registers
+    logic [31:0] lp_a_reg, lp_b_reg;
     always_ff @(posedge clk) begin
         if (reset || load_seed) begin
             lp_a_reg <= (active_seed == 32'h00000000) ? 32'h00000001 : active_seed;
@@ -88,31 +81,75 @@ module lt_lfsr_32bit (
         end
     end
 
-    // -------------------------------------------------------------------------
-    // 3. Opcode Generation Paths
-    // -------------------------------------------------------------------------
-    // Standard uniform opcode (updates every cycle)
-    logic [3:0] std_op;
-    assign std_op = (lfsr_reg[3:0] >= 4'd10) ? (lfsr_reg[3:0] - 4'd10) : lfsr_reg[3:0];
+    // Power-Aware Operand Generation
+    logic [31:0] pa_pattern_a, pa_pattern_b;
+    operand_pattern_generator u_op_gen (
+        .clk(clk),
+        .reset(reset || load_seed),
+        .enable(enable),
+        .power_aware_mode(power_aware_mode),
+        .raw_lfsr_a(lp_a_reg),
+        .raw_lfsr_b(lp_b_reg),
+        .out_pattern_a(pa_pattern_a),
+        .out_pattern_b(pa_pattern_b)
+    );
 
-    // Abu-Issa BS opcode (updates every cycle from swapped bits)
-    logic [3:0] bs_op;
+    // 3. Opcode Generation Paths
+    logic [3:0] std_op, bs_op;
+    assign std_op = (lfsr_reg[3:0] >= 4'd10) ? (lfsr_reg[3:0] - 4'd10) : lfsr_reg[3:0];
     assign bs_op = (swapped_a[3:0] >= 4'd10) ? (swapped_a[3:0] - 4'd10) : swapped_a[3:0];
 
-    // Workload-Aware Opcode Mapper (CoreMark/Dhrystone distribution + Phase Clustering)
-    logic [3:0] wom_op;
-    bist_workload_mapper u_wom (
+    // Programmable Workload Mapper
+    logic [3:0] pwm_op;
+    programmable_workload_mapper u_pwm (
         .clk(clk),
         .reset(reset || load_seed),
         .enable(enable),
         .entropy_window(lfsr_reg[4:0]),
         .phase_counter(sub_counter[3:0]),
-        .workload_opcode(wom_op)
+        .profile_select(profile_select),
+        .workload_opcode(pwm_op)
     );
 
-    // -------------------------------------------------------------------------
+    // Transition Model
+    logic [3:0] tm_op;
+    logic [3:0] prev_op_reg;
+    always_ff @(posedge clk) begin
+        if (reset || load_seed) prev_op_reg <= 4'd0;
+        else if (enable) prev_op_reg <= pattern_op;
+    end
+
+    transition_model u_tm (
+        .clk(clk),
+        .reset(reset || load_seed),
+        .enable(enable),
+        .entropy_window(lfsr_reg[9:5]), // Use different entropy bits
+        .phase_counter(sub_counter[3:0]),
+        .prev_opcode(prev_op_reg),
+        .next_opcode(tm_op)
+    );
+
+    // Choose WA opcode based on power aware mode
+    logic [3:0] wa_final_op;
+    assign wa_final_op = power_aware_mode ? tm_op : pwm_op;
+
+    // Fault Boost Generator
+    logic [31:0] boost_a, boost_b;
+    logic [3:0]  boost_op;
+    fault_boost_generator u_boost (
+        .clk(clk),
+        .reset(reset || load_seed),
+        .enable(enable),
+        .fault_boost_mode(fault_boost_mode),
+        .raw_lfsr_a(pa_pattern_a),
+        .raw_lfsr_b(pa_pattern_b),
+        .normal_op(wa_final_op),
+        .boost_pattern_a(boost_a),
+        .boost_pattern_b(boost_b),
+        .boost_op(boost_op)
+    );
+
     // 4. Multiplexing Based on bist_mode
-    // -------------------------------------------------------------------------
     always_comb begin
         case (bist_mode)
             MODE_STD: begin
@@ -126,9 +163,9 @@ module lt_lfsr_32bit (
                 pattern_op = bs_op;
             end
             MODE_WA_BIST: begin
-                pattern_a  = lp_a_reg;
-                pattern_b  = lp_b_reg;
-                pattern_op = wom_op;
+                pattern_a  = boost_a;
+                pattern_b  = boost_b;
+                pattern_op = boost_op;
             end
             default: begin
                 pattern_a  = lfsr_reg;
