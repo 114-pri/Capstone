@@ -1,4 +1,4 @@
-# Project Guide: Workload-Aware Low-Power BIST (WA-LP-BIST)
+# Project Guide: Adaptive Workload-Aware Low-Power BIST (AWA-LP-BIST)
 
 *This document explains exactly what your project is, why it matters, and how it works in plain, easy-to-understand language. You can easily export this Markdown file to a PDF in your editor.*
 

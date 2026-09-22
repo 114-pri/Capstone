@@ -1,4 +1,4 @@
-# Workload-Correlated Low-Power BIST (WA-LP-BIST) for 32-Bit RISC-V RV32I ALU
+# Adaptive Workload-Aware Low-Power BIST (AWA-LP-BIST) for 32-Bit RISC-V RV32I ALU
 
 ![SystemVerilog](https://img.shields.io/badge/Language-SystemVerilog-blue.svg)
 ![EDA Tool](https://img.shields.io/badge/EDA-AMD%20Vivado%202025.2-orange.svg)
@@ -6,7 +6,7 @@
 ![Fault Coverage](https://img.shields.io/badge/Fault%20Coverage-100%25%20(12%2F12)-brightgreen.svg)
 ![Power Reduction](https://img.shields.io/badge/Dynamic%20WSA%20Reduction-48.23%25-success.svg)
 
-An open-source, synthesizable SystemVerilog implementation of an **ISA-Aware / Workload-Correlated Low-Power Built-In Self-Test (WA-LP-BIST)** architecture for a **32-bit RISC-V (RV32I)** arithmetic logic datapath. 
+An open-source, synthesizable SystemVerilog implementation of an **ISA-Aware / Adaptive Workload-Aware Low-Power Built-In Self-Test (AWA-LP-BIST)** architecture for a **32-bit RISC-V (RV32I)** arithmetic logic datapath. 
 
 This design tackles the fundamental challenge of excessive switching activity and dynamic IR-drop during pseudo-random testing by combining **Interleaved Bank Bit-Swapping (IB-BS)**, a **Synthesizable Weighted Opcode Mapper (WOM)** calibrated to empirical RISC-V benchmarks (CoreMark & Dhrystone), and **burst phase clustering**.
 
@@ -18,7 +18,7 @@ This design tackles the fundamental challenge of excessive switching activity an
 graph TD
     subgraph BIST_Subsystem ["Autonomous BIST Subsystem"]
         FSM["BIST Controller (FSM)<br/><i>RESET, RUN, EVAL</i>"]
-        LFSR["32-Bit Reconfigurable Pattern Gen<br/><i>Standard / Abu-Issa / WA-LP-BIST</i>"]
+        LFSR["32-Bit Reconfigurable Pattern Gen<br/><i>Standard / Abu-Issa / AWA-LP-BIST</i>"]
         WOM["Weighted Opcode Mapper<br/><i>CoreMark / Dhrystone Profiled</i>"]
         WSA["Hardware WSA Monitor<br/><i>Cycle-by-Cycle Transition Tracker</i>"]
     end
@@ -53,7 +53,7 @@ graph TD
 | **RV32I ALU (CUT)** | [`alu_rv32i.sv`](src/alu_rv32i.sv) | Full 32-bit RV32I execution core supporting 10 standard operations with internal fault observation taps. |
 | **Workload Mapper** | [`programmable_workload_mapper.sv`](src/programmable_workload_mapper.sv) | Programmable opcode generator weighting instructions based on profiling. |
 | **Adaptive Controller** | [`adaptive_controller.sv`](src/adaptive_controller.sv) | Intelligent closed-loop controller balancing power and fault coverage. |
-| **Reconfigurable LFSR** | [`lt_lfsr_32bit.sv`](src/lt_lfsr_32bit.sv) | 32-bit PRPG supporting Uniform LFSR, Abu-Issa BS-LFSR, and Proposed WA-LP-BIST. |
+| **Reconfigurable LFSR** | [`lt_lfsr_32bit.sv`](src/lt_lfsr_32bit.sv) | 32-bit PRPG supporting Uniform LFSR, Abu-Issa BS-LFSR, and Proposed AWA-LP-BIST. |
 | **Operand Gen** | [`operand_pattern_generator.sv`](src/operand_pattern_generator.sv) | Generates test operand patterns targeting structural faults. |
 | **Fault Boost** | [`fault_boost_generator.sv`](src/fault_boost_generator.sv) | Dynamically boosts switching activity or test vectors to achieve high coverage. |
 | **Parallel MISR** | [`misr_32bit.sv`](src/misr_32bit.sv) | 32-bit maximal-length parallel signature compactor ($P_{alias} \approx 2.33 \times 10^{-10}$). |
@@ -73,7 +73,7 @@ The test architecture includes runtime reconfigurability to evaluate baseline an
 | :---: | :--- | :--- |
 | `2'b00` | **Standard Uniform LFSR** | Conventional unweighted maximal-length PRPG ($x^{32} + x^{22} + x^2 + x + 1$). High-entropy toggling baseline. |
 | `2'b01` | **Abu-Issa BS-LFSR** | Classical Bit-Swapping LFSR (IEEE TVLSI 2012 benchmark) reducing adjacent cell transitions. |
-| `2'b10` | **Proposed WA-LP-BIST** | Workload-Correlated BIST: Interleaved Bank Bit-Swapping + Profiled Opcode Mapping + 4-cycle burst phase decimation. |
+| `2'b10` | **Proposed AWA-LP-BIST** | Adaptive Workload-Aware BIST: Interleaved Bank Bit-Swapping + Profiled Opcode Mapping + 4-cycle burst phase decimation. |
 
 ### Workload-Aware Instruction Distribution
 Profiled from empirical CoreMark and Dhrystone RV32I execution traces:
@@ -90,7 +90,7 @@ All metrics are validated using a **50-seed Monte Carlo statistical ensemble** a
 
 ### 1. Switching Activity & Transition Reduction (50-Seed Monte Carlo)
 
-| Metric | Standard LFSR (`00`) | Abu-Issa BS-LFSR (`01`) | Proposed WA-LP-BIST (`10`) | Improvement vs Standard | Improvement vs Abu-Issa |
+| Metric | Standard LFSR (`00`) | Abu-Issa BS-LFSR (`01`) | Proposed AWA-LP-BIST (`10`) | Improvement vs Standard | Improvement vs Abu-Issa |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Mean Cumulative WSA** | $8637.5 \pm 438.6$ | $6551.6 \pm 316.5$ | **$4464.7 \pm 183.2$** | **$-48.23\%$** | **$-24.10\%$** |
 | **Peak Single-Cycle Transitions** | 50 transitions | 38 transitions | **28 transitions** | **$-44.00\%$** | **$-26.32\%$** |
@@ -136,7 +136,7 @@ LFSR_BIST_ALU_Vivado/
 │   ├── programmable_workload_mapper.sv   # Programmable Weighted Opcode Mapper (WOM)
 │   ├── operand_pattern_generator.sv      # Generates low-transition test operands
 │   ├── fault_boost_generator.sv          # Coverage-driven test vector boosting
-│   ├── lt_lfsr_32bit.sv                  # 3-mode PRPG (Uniform, Abu-Issa BS-LFSR, WA-LP-BIST)
+│   ├── lt_lfsr_32bit.sv                  # 3-mode PRPG (Uniform, Abu-Issa BS-LFSR, AWA-LP-BIST)
 │   ├── misr_32bit.sv                     # 32-bit Parallel MISR Response Compactor
 │   ├── fault_injector_32bit.sv           # Primary & gate-level fault injector (SA0/SA1)
 │   ├── signature_comparator_32bit.sv     # 32-bit signature evaluation comparator
