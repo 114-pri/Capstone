@@ -51,12 +51,17 @@ graph TD
 | :--- | :--- | :--- |
 | **BIST Top** | [`bist_top.sv`](src/bist_top.sv) | Top-level integration uniting CUT, pattern generator, MISR, FSM, and monitor into 91 user I/O pins. |
 | **RV32I ALU (CUT)** | [`alu_rv32i.sv`](src/alu_rv32i.sv) | Full 32-bit RV32I execution core supporting 10 standard operations with internal fault observation taps. |
-| **Workload Mapper** | [`bist_workload_mapper.sv`](src/bist_workload_mapper.sv) | Synthesizable opcode generator weighting instructions based on CoreMark/Dhrystone profiling. |
+| **Workload Mapper** | [`programmable_workload_mapper.sv`](src/programmable_workload_mapper.sv) | Programmable opcode generator weighting instructions based on profiling. |
+| **Adaptive Controller** | [`adaptive_controller.sv`](src/adaptive_controller.sv) | Intelligent closed-loop controller balancing power and fault coverage. |
 | **Reconfigurable LFSR** | [`lt_lfsr_32bit.sv`](src/lt_lfsr_32bit.sv) | 32-bit PRPG supporting Uniform LFSR, Abu-Issa BS-LFSR, and Proposed WA-LP-BIST. |
+| **Operand Gen** | [`operand_pattern_generator.sv`](src/operand_pattern_generator.sv) | Generates test operand patterns targeting structural faults. |
+| **Fault Boost** | [`fault_boost_generator.sv`](src/fault_boost_generator.sv) | Dynamically boosts switching activity or test vectors to achieve high coverage. |
 | **Parallel MISR** | [`misr_32bit.sv`](src/misr_32bit.sv) | 32-bit maximal-length parallel signature compactor ($P_{alias} \approx 2.33 \times 10^{-10}$). |
 | **Fault Injector** | [`fault_injector_32bit.sv`](src/fault_injector_32bit.sv) | Hardware injector modeling Stuck-At-0 (SA0) and Stuck-At-1 (SA1) on outputs and internal gates. |
 | **FSM Controller** | [`bist_controller.sv`](src/bist_controller.sv) | Autonomous 3-state control engine (`RESET`, `RUN`, `EVAL`) managing test sequencing. |
-| **WSA Monitor** | [`wsa_monitor.sv`](src/wsa_monitor.sv) | Real-time hardware transition counter computing cumulative Weighted Switching Activity. |
+| **WSA Monitor** | [`enhanced_wsa_monitor.sv`](src/enhanced_wsa_monitor.sv) | Real-time hardware transition counter computing cumulative Weighted Switching Activity. |
+| **Fault Monitor** | [`fault_coverage_monitor.sv`](src/fault_coverage_monitor.sv) | Dynamic monitor tracking fault coverage estimation on the fly. |
+| **Transition Model** | [`transition_model.sv`](src/transition_model.sv) | Real-time tracking and statistical modeling of logic transitions. |
 
 ---
 
@@ -126,13 +131,18 @@ Evaluated against 12 representative stuck-at faults across primary outputs and c
 LFSR_BIST_ALU_Vivado/
 │
 ├── src/                                  # Synthesizable SystemVerilog Core RTL
+│   ├── adaptive_controller.sv            # Intelligent closed-loop BIST controller
 │   ├── alu_rv32i.sv                      # 32-bit RV32I ALU with internal gate fault observation
-│   ├── bist_workload_mapper.sv           # Synthesizable Weighted Opcode Mapper (WOM)
+│   ├── programmable_workload_mapper.sv   # Programmable Weighted Opcode Mapper (WOM)
+│   ├── operand_pattern_generator.sv      # Generates low-transition test operands
+│   ├── fault_boost_generator.sv          # Coverage-driven test vector boosting
 │   ├── lt_lfsr_32bit.sv                  # 3-mode PRPG (Uniform, Abu-Issa BS-LFSR, WA-LP-BIST)
 │   ├── misr_32bit.sv                     # 32-bit Parallel MISR Response Compactor
 │   ├── fault_injector_32bit.sv           # Primary & gate-level fault injector (SA0/SA1)
 │   ├── signature_comparator_32bit.sv     # 32-bit signature evaluation comparator
-│   ├── wsa_monitor.sv                    # Hardware cycle-by-cycle transition tracker
+│   ├── enhanced_wsa_monitor.sv           # Hardware cycle-by-cycle transition tracker
+│   ├── fault_coverage_monitor.sv         # Dynamic fault coverage tracking
+│   ├── transition_model.sv               # Real-time state transition modeling
 │   ├── bist_controller.sv                # 3-state autonomous BIST FSM
 │   └── bist_top.sv                       # Top-level chip integration (91 I/O pins)
 │
@@ -142,7 +152,9 @@ LFSR_BIST_ALU_Vivado/
 ├── constraints/                          # Synthesis & Physical Constraints
 │   └── timing.xdc                        # 100 MHz clock and I/O delay constraints
 │
-├── scripts/                              # Vivado Tcl Automation Scripts
+├── scripts/                              # Automation Scripts
+│   ├── run_experiments.py                # Python test orchestrator
+│   ├── workload_profiler.py              # Profiler for CoreMark/Dhrystone synthesis
 │   ├── create_project.tcl                # Fresh project rebuild, simulation, synth & implementation
 │   ├── run_simulation.tcl                # Batch simulation running Monte Carlo & fault matrix
 │   └── generate_saif_power.tcl           # SAIF vector recording & post-impl power analysis
