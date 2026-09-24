@@ -7,7 +7,7 @@ module programmable_workload_mapper (
     input  logic        enable,
     input  logic [4:0]  entropy_window,
     input  logic [3:0]  phase_counter,
-    input  logic [1:0]  profile_select,   // 00: Uniform, 01: CoreMark/Dhrystone, 10: Logic-Heavy, 11: Shift-Heavy
+    input  logic [2:0]  profile_select,   // 000: Uniform, 001: CoreMark/Dhrystone, 010: Logic-Heavy, 011: Shift-Heavy, 100: STRESS
     output logic [3:0]  workload_opcode
 );
     // Profile definitions (Scaled 0-255)
@@ -34,30 +34,46 @@ module programmable_workload_mapper (
     localparam int unsigned P3_W_LOGIC = 64;
     localparam int unsigned P3_W_SHIFT = 96;
     localparam int unsigned P3_W_COMP  = 31;
+    
+    // Profile 4: STRESS WORKLOAD (100% Shift for Adaptive Controller Validation)
+    localparam int unsigned P4_W_ARITH = 0;
+    localparam int unsigned P4_W_LOGIC = 0;
+    localparam int unsigned P4_W_SHIFT = 255;
+    localparam int unsigned P4_W_COMP  = 0;
 
     logic [7:0] t_arith, t_logic, t_shift;
 
     always_comb begin
         case(profile_select)
-            2'b00: begin
+            3'b000: begin
                 t_arith = P0_W_ARITH;
                 t_logic = P0_W_ARITH + P0_W_LOGIC;
                 t_shift = P0_W_ARITH + P0_W_LOGIC + P0_W_SHIFT;
             end
-            2'b01: begin
+            3'b001: begin
                 t_arith = P1_W_ARITH;
                 t_logic = P1_W_ARITH + P1_W_LOGIC;
                 t_shift = P1_W_ARITH + P1_W_LOGIC + P1_W_SHIFT;
             end
-            2'b10: begin
+            3'b010: begin
                 t_arith = P2_W_ARITH;
                 t_logic = P2_W_ARITH + P2_W_LOGIC;
                 t_shift = P2_W_ARITH + P2_W_LOGIC + P2_W_SHIFT;
             end
-            2'b11: begin
+            3'b011: begin
                 t_arith = P3_W_ARITH;
                 t_logic = P3_W_ARITH + P3_W_LOGIC;
                 t_shift = P3_W_ARITH + P3_W_LOGIC + P3_W_SHIFT;
+            end
+            3'b100: begin
+                t_arith = P4_W_ARITH;
+                t_logic = P4_W_ARITH + P4_W_LOGIC;
+                t_shift = P4_W_ARITH + P4_W_LOGIC + P4_W_SHIFT;
+            end
+            default: begin
+                t_arith = P0_W_ARITH;
+                t_logic = P0_W_ARITH + P0_W_LOGIC;
+                t_shift = P0_W_ARITH + P0_W_LOGIC + P0_W_SHIFT;
             end
         endcase
     end

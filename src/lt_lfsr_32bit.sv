@@ -14,7 +14,7 @@ module lt_lfsr_32bit (
     input  logic [31:0] seed,
     input  logic        power_aware_mode,
     input  logic        fault_boost_mode,
-    input  logic [1:0]  profile_select,
+    input  logic [2:0]  profile_select,
     output logic [31:0] pattern_a,
     output logic [31:0] pattern_b,
     output logic [3:0]  pattern_op,

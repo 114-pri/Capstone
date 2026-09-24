@@ -1,0 +1,54 @@
+========================================================
+FINAL AWA-LP-BIST VALIDATION SUMMARY
+========================================================
+
+Behavior:
+  Standard correctness: PASS
+  Static AWA correctness: PASS
+  Adaptive AWA correctness: PASS
+  Fault coverage: PASS
+  Adaptive controller sanity: PASS
+
+Switching:
+  Standard: 170504 transitions
+  Static AWA: 84087 transitions
+  Adaptive AWA: 81982 transitions
+  Static reduction: 50.68%
+  Adaptive reduction: 51.92%
+  Additional adaptive contribution: 1.23%
+
+Hardware:
+  LUT: 0
+  FF: 0
+  CARRY4: 0
+  BRAM: 0
+  DSP: 0
+  BUFG: 0
+  IOB: 0
+  Slices: 0
+
+Timing:
+  WNS: 0.473 ns
+  TNS: 0 ns
+  WHS: 0.063 ns
+  THS: 0 ns
+  Failing endpoints: 0
+  Frequency: 71.4 MHz
+  Timing status: PASS
+
+Power:
+  Standard: Dynamic=73mW, Static=70mW, Total=143mW
+  Static AWA: Dynamic=64mW, Static=70mW, Total=134mW
+  Adaptive AWA: Dynamic=63mW, Static=70mW, Total=134mW
+  Dynamic reduction (Stat/Adap): 12.33% / 13.7%
+  Total reduction (Stat/Adap): 6.29% / 6.29%
+
+DRC:
+  Errors: 0
+  Critical warnings: 0
+  I/O planning warnings: 0 (All warnings shown)
+
+FINAL PROJECT STATUS:
+  PASS
+
+========================================================

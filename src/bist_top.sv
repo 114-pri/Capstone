@@ -9,7 +9,7 @@ module bist_top #(
     input  logic        reset,
     input  logic        start,
     input  logic [1:0]  bist_mode,             // 00: STD, 01: BS-LFSR, 10: Proposed WA-BIST
-    input  logic [1:0]  profile_select,        // 00: Uniform, 01: CoreMark, 10: Logic, 11: Shift
+    input  logic [2:0]  profile_select,        // 000: Uniform, 001: CoreMark, 010: Logic, 011: Shift, 100: STRESS
     input  logic        fault_enable,
     input  logic [1:0]  fault_type,            
     input  logic [4:0]  fault_select,          
@@ -20,7 +20,9 @@ module bist_top #(
     output logic        test_done,
     output logic [31:0] signature,
     output logic [31:0] total_transitions,
-    output logic [7:0]  peak_transitions
+    output logic [7:0]  peak_transitions,
+    output logic        pa_active,
+    output logic        fb_active
 );
     // Internal interconnects and hierarchical testbench access points
     logic        fault_injection_valid;
@@ -51,8 +53,17 @@ module bist_top #(
     logic [15:0] total_detected;
     logic [7:0]  last_cycle_transitions;
 
+    logic [1:0]  bist_mode_reg;
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            bist_mode_reg <= 2'b00;
+        end else if (start) begin
+            bist_mode_reg <= bist_mode;
+        end
+    end
+
     always_comb begin
-        case (bist_mode)
+        case (bist_mode_reg)
             2'b00:   active_golden_signature = GOLDEN_SIG_STD;
             2'b01:   active_golden_signature = GOLDEN_SIG_BS;
             2'b10:   active_golden_signature = GOLDEN_SIG_WA;
@@ -66,7 +77,7 @@ module bist_top #(
         .reset(reset || lfsr_seed_load),
         .enable(lfsr_step),
         .wsa_total(total_transitions),
-        .wsa_peak(peak_transitions),
+        .wsa_toggles(last_cycle_transitions),
         .coverage_stagnated(coverage_stagnated),
         .power_aware_mode(power_aware_mode),
         .fault_boost_mode(fault_boost_mode)
@@ -78,6 +89,7 @@ module bist_top #(
         .reset(reset || lfsr_seed_load),
         .fault_injection_valid(fault_injection_valid),
         .fault_detection_valid(fault_detection_valid),
+        .fault_campaign_active(fault_enable),
         .total_injected(total_injected),
         .total_detected(total_detected),
         .coverage_stagnated(coverage_stagnated)
@@ -89,7 +101,7 @@ module bist_top #(
         .reset(reset),
         .load_seed(lfsr_seed_load),
         .enable(lfsr_step),
-        .bist_mode(bist_mode),
+        .bist_mode(bist_mode_reg),
         .seed(32'h00000001),
         .power_aware_mode(power_aware_mode),
         .fault_boost_mode(fault_boost_mode),
@@ -177,4 +189,8 @@ module bist_top #(
         .fail(fail),
         .current_phase(current_phase)
     );
+
+    assign pa_active = power_aware_mode;
+    assign fb_active = fault_boost_mode;
+
 endmodule

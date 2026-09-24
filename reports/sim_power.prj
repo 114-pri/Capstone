@@ -1,0 +1,15 @@
+sv work src/adaptive_controller.sv
+sv work src/alu_rv32i.sv
+sv work src/bist_controller.sv
+sv work src/bist_top.sv
+sv work src/enhanced_wsa_monitor.sv
+sv work src/fault_boost_generator.sv
+sv work src/fault_coverage_monitor.sv
+sv work src/fault_injector_32bit.sv
+sv work src/lt_lfsr_32bit.sv
+sv work src/misr_32bit.sv
+sv work src/operand_pattern_generator.sv
+sv work src/programmable_workload_mapper.sv
+sv work src/signature_comparator_32bit.sv
+sv work src/transition_model.sv
+sv work sim/tb_power_char.sv

@@ -16,7 +16,11 @@ set saif_file   [file normalize [file join $reports_dir activity.saif]]
 file mkdir $reports_dir
 
 # Open Project
-open_project [file join $project_dir LFSR_LP_BIST_ALU.xpr]
+if {[current_project -quiet] eq ""} {
+    open_project [file join $project_dir LFSR_LP_BIST_ALU.xpr]
+} else {
+    puts "Project is already open in GUI. Proceeding with SAIF generation..."
+}
 
 # 1. Run Simulation with Native SAIF Dumping
 launch_simulation

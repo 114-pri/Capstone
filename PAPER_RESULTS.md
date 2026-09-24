@@ -1,167 +1,120 @@
-# Adaptive Workload-Aware Low-Power Built-In Self-Test (AWA-LP-BIST) for 32-Bit RISC-V Execution Datapaths
+﻿# Adaptive Workload-Aware Low-Power BIST (AWA-LP-BIST) Final Validation Results
 
-**Target Publication Venues**: IEEE VLSI Test Symposium (VTS), IEEE Asian Test Symposium (ATS), IEEE European Test Symposium (ETS), IEEE International Symposium on Circuits and Systems (ISCAS), IEEE Transactions on Very Large Scale Integration (TVLSI).
+## A. BUILD STATUS
+Compilation: PASS
+Elaboration: PASS
+Simulation: PASS
 
----
+## B. NOMINAL 5-SEED x 4-PROFILE RESULTS
+| Seed Idx | Mode     | Profile | Max Window | Mean Window | 95th Percentile | PA Acts | PA Deacts | PA Cycles | Total Trans | Avg Trans/Cyc | Peak Trans | PASS/FAIL |
+|----------|----------|---------|------------|-------------|-----------------|---------|-----------|-----------|-------------|---------------|------------|-----------|
+|        0 | STD      |      00 |         45 |       33.10 |              44 |       1 |         0 |       238 |        8611 |         33.77 |         49 |      PASS |
+|        0 | STATIC   |      00 |         18 |       14.95 |              18 |       0 |         0 |         0 |        3986 |         15.63 |         36 |      PASS |
+|        0 | ADAPTIVE |      00 |         18 |       14.95 |              18 |       0 |         0 |         0 |        3986 |         15.63 |         36 |      PASS |
+|        0 | STD      |      01 |         45 |       33.10 |              44 |       1 |         0 |       238 |        8611 |         33.77 |         49 |      PASS |
+|        0 | STATIC   |      01 |         18 |       14.84 |              18 |       0 |         0 |         0 |        3954 |         15.51 |         36 |      PASS |
+|        0 | ADAPTIVE |      01 |         18 |       14.84 |              18 |       0 |         0 |         0 |        3954 |         15.51 |         36 |      PASS |
+|        0 | STD      |      10 |         45 |       33.10 |              44 |       1 |         0 |       238 |        8611 |         33.77 |         49 |      PASS |
+|        0 | STATIC   |      10 |         18 |       14.94 |              18 |       0 |         0 |         0 |        3986 |         15.63 |         36 |      PASS |
+|        0 | ADAPTIVE |      10 |         18 |       14.94 |              18 |       0 |         0 |         0 |        3986 |         15.63 |         36 |      PASS |
+|        0 | STD      |      11 |         45 |       33.10 |              44 |       1 |         0 |       238 |        8611 |         33.77 |         49 |      PASS |
+|        0 | STATIC   |      11 |         18 |       14.99 |              18 |       0 |         0 |         0 |        3998 |         15.68 |         36 |      PASS |
+|        0 | ADAPTIVE |      11 |         18 |       14.99 |              18 |       0 |         0 |         0 |        3998 |         15.68 |         36 |      PASS |
+|        0 | ADAPTIVE |  STRESS |         18 |       14.60 |              17 |       0 |         0 |         0 |        3893 |         15.27 |         36 |      PASS |
+|        1 | STD      |      00 |         45 |       33.92 |              40 |       1 |         0 |       238 |        8804 |         34.53 |         52 |      PASS |
+|        1 | STATIC   |      00 |         21 |       16.57 |              20 |       0 |         0 |         0 |        4316 |         16.93 |         32 |      PASS |
+|        1 | ADAPTIVE |      00 |         21 |       16.19 |              20 |       1 |         1 |       109 |        4230 |         16.59 |         38 |      PASS |
+|        1 | STD      |      01 |         45 |       33.92 |              40 |       1 |         0 |       238 |        8804 |         34.53 |         52 |      PASS |
+|        1 | STATIC   |      01 |         21 |       16.36 |              19 |       0 |         0 |         0 |        4275 |         16.76 |         32 |      PASS |
+|        1 | ADAPTIVE |      01 |         21 |       16.18 |              20 |       1 |         1 |       104 |        4235 |         16.61 |         37 |      PASS |
+|        1 | STD      |      10 |         45 |       33.92 |              40 |       1 |         0 |       238 |        8804 |         34.53 |         52 |      PASS |
+|        1 | STATIC   |      10 |         21 |       16.49 |              20 |       0 |         0 |         0 |        4305 |         16.88 |         32 |      PASS |
+|        1 | ADAPTIVE |      10 |         21 |       16.15 |              20 |       1 |         1 |       109 |        4221 |         16.55 |         38 |      PASS |
+|        1 | STD      |      11 |         45 |       33.92 |              40 |       1 |         0 |       238 |        8804 |         34.53 |         52 |      PASS |
+|        1 | STATIC   |      11 |         21 |       16.54 |              20 |       0 |         0 |         0 |        4314 |         16.92 |         32 |      PASS |
+|        1 | ADAPTIVE |      11 |         21 |       16.19 |              20 |       1 |         1 |       109 |        4232 |         16.60 |         38 |      PASS |
+|        1 | ADAPTIVE |  STRESS |         21 |       16.15 |              20 |       1 |         1 |       104 |        4216 |         16.53 |         37 |      PASS |
+|        2 | STD      |      00 |         46 |       34.12 |              41 |       1 |         0 |       238 |        8943 |         35.07 |         51 |      PASS |
+|        2 | STATIC   |      00 |         25 |       16.99 |              23 |       0 |         0 |         0 |        4480 |         17.57 |         33 |      PASS |
+|        2 | ADAPTIVE |      00 |         24 |       16.35 |              21 |       2 |         1 |        58 |        4293 |         16.84 |         46 |      PASS |
+|        2 | STD      |      01 |         46 |       34.12 |              41 |       1 |         0 |       238 |        8943 |         35.07 |         51 |      PASS |
+|        2 | STATIC   |      01 |         25 |       16.85 |              23 |       0 |         0 |         0 |        4449 |         17.45 |         33 |      PASS |
+|        2 | ADAPTIVE |      01 |         24 |       16.27 |              21 |       2 |         1 |        58 |        4269 |         16.74 |         46 |      PASS |
+|        2 | STD      |      10 |         46 |       34.12 |              41 |       1 |         0 |       238 |        8943 |         35.07 |         51 |      PASS |
+|        2 | STATIC   |      10 |         25 |       17.02 |              23 |       0 |         0 |         0 |        4485 |         17.59 |         33 |      PASS |
+|        2 | ADAPTIVE |      10 |         24 |       16.41 |              21 |       2 |         1 |        59 |        4301 |         16.87 |         46 |      PASS |
+|        2 | STD      |      11 |         46 |       34.12 |              41 |       1 |         0 |       238 |        8943 |         35.07 |         51 |      PASS |
+|        2 | STATIC   |      11 |         25 |       17.05 |              23 |       0 |         0 |         0 |        4499 |         17.64 |         33 |      PASS |
+|        2 | ADAPTIVE |      11 |         24 |       16.41 |              21 |       2 |         1 |        59 |        4307 |         16.89 |         46 |      PASS |
+|        2 | ADAPTIVE |  STRESS |         24 |       15.98 |              21 |       2 |         1 |        58 |        4211 |         16.51 |         46 |      PASS |
+|        3 | STD      |      00 |         37 |       29.35 |              36 |       1 |         0 |       233 |        7518 |         29.48 |         50 |      PASS |
+|        3 | STATIC   |      00 |         22 |       15.94 |              21 |       0 |         0 |         0 |        4111 |         16.12 |         48 |      PASS |
+|        3 | ADAPTIVE |      00 |         22 |       15.60 |              20 |       2 |         2 |        61 |        4035 |         15.82 |         52 |      PASS |
+|        3 | STD      |      01 |         37 |       29.35 |              36 |       1 |         0 |       233 |        7518 |         29.48 |         50 |      PASS |
+|        3 | STATIC   |      01 |         22 |       15.82 |              20 |       0 |         0 |         0 |        4091 |         16.04 |         48 |      PASS |
+|        3 | ADAPTIVE |      01 |         22 |       15.57 |              20 |       2 |         2 |        61 |        4027 |         15.79 |         52 |      PASS |
+|        3 | STD      |      10 |         37 |       29.35 |              36 |       1 |         0 |       233 |        7518 |         29.48 |         50 |      PASS |
+|        3 | STATIC   |      10 |         22 |       15.96 |              21 |       0 |         0 |         0 |        4115 |         16.14 |         48 |      PASS |
+|        3 | ADAPTIVE |      10 |         22 |       15.62 |              20 |       2 |         2 |        63 |        4037 |         15.83 |         52 |      PASS |
+|        3 | STD      |      11 |         37 |       29.35 |              36 |       1 |         0 |       233 |        7518 |         29.48 |         50 |      PASS |
+|        3 | STATIC   |      11 |         22 |       15.99 |              21 |       0 |         0 |         0 |        4119 |         16.15 |         48 |      PASS |
+|        3 | ADAPTIVE |      11 |         22 |       15.64 |              20 |       2 |         2 |        62 |        4043 |         15.85 |         52 |      PASS |
+|        3 | ADAPTIVE |  STRESS |         22 |       15.40 |              20 |       2 |         2 |        61 |        3982 |         15.62 |         52 |      PASS |
+|        4 | STD      |      00 |         47 |       34.61 |              45 |       1 |         0 |       233 |        8750 |         34.31 |         50 |      PASS |
+|        4 | STATIC   |      00 |         20 |       16.20 |              20 |       0 |         0 |         0 |        4158 |         16.31 |         27 |      PASS |
+|        4 | ADAPTIVE |      00 |         20 |       15.33 |              19 |       3 |         3 |        88 |        3948 |         15.48 |         43 |      PASS |
+|        4 | STD      |      01 |         47 |       34.61 |              45 |       1 |         0 |       233 |        8750 |         34.31 |         50 |      PASS |
+|        4 | STATIC   |      01 |         20 |       16.03 |              20 |       0 |         0 |         0 |        4124 |         16.17 |         26 |      PASS |
+|        4 | ADAPTIVE |      01 |         20 |       15.41 |              19 |       2 |         2 |        65 |        3976 |         15.59 |         43 |      PASS |
+|        4 | STD      |      10 |         47 |       34.61 |              45 |       1 |         0 |       233 |        8750 |         34.31 |         50 |      PASS |
+|        4 | STATIC   |      10 |         20 |       16.17 |              20 |       0 |         0 |         0 |        4156 |         16.30 |         26 |      PASS |
+|        4 | ADAPTIVE |      10 |         20 |       15.33 |              19 |       3 |         3 |        86 |        3952 |         15.50 |         43 |      PASS |
+|        4 | STD      |      11 |         47 |       34.61 |              45 |       1 |         0 |       233 |        8750 |         34.31 |         50 |      PASS |
+|        4 | STATIC   |      11 |         20 |       16.23 |              20 |       0 |         0 |         0 |        4166 |         16.34 |         27 |      PASS |
+|        4 | ADAPTIVE |      11 |         20 |       15.35 |              19 |       3 |         3 |        88 |        3952 |         15.50 |         43 |      PASS |
+|        4 | ADAPTIVE |  STRESS |         20 |       15.31 |              19 |       2 |         2 |        65 |        3941 |         15.45 |         43 |      PASS |
 
-## Abstract
-During Built-In Self-Test (BIST), pseudo-random test patterns generated by uniform Linear Feedback Shift Registers (LFSRs) induce excessively high switching activity—frequently exceeding functional-mode power by 200% to 400%. This excessive switching induces severe dynamic IR-drop, localized thermal hotspots, and artificial yield loss. While classic low-transition techniques (such as Abu-Issa's Bit-Swapping LFSR) reduce transitions in generic scan chains, they disregard the functional semantics and instruction set architecture (ISA) correlations of the Circuit Under Test (CUT).
+## C. AGGREGATE SWITCHING RESULTS
+| Metric | Result |
+| :--- | :--- |
+| **Standard Total Transitions** | 170504 |
+| **Static AWA Total Transitions** | 84087 |
+| **Adaptive AWA Total Transitions** | 81982 |
+| **Static Switching Reduction** | 50.68 % |
+| **Adaptive Switching Reduction** | 51.92 % |
+| **Additional Adaptive Contribution** | 2.50 % |
+| **Total Autonomous PA Activations** | 38 |
+| **Total Autonomous PA Deactivations**| 33 |
 
-This paper presents **AWA-LP-BIST**, a novel **Adaptive Workload-Aware Low-Power BIST** architecture specifically tailored for standard **32-bit RISC-V (RV32I)** execution units. The proposed pattern generator couples **Interleaved Bank Bit-Swapping (IB-BS)** with a **Synthesizable Weighted Opcode Mapper (WOM)** calibrated to empirical CoreMark and Dhrystone RV32I instruction distributions (50.0% Arithmetic, 25.0% Logic, 12.5% Shifts, 12.5% Comparisons) with burst phase clustering. Test responses are compacted using a parallel 32-bit Multiple-Input Signature Register (MISR) with an optimal maximal-length polynomial ($x^{32} + x^{22} + x^2 + x + 1$) yielding an aliasing probability of $P_{alias} \approx 2.33 \times 10^{-10}$. 
+## D. FAULT COVERAGE
+**STANDARD:**
+Injected : 100
+Detected : 100
+Missed   : 0
+Coverage : 100.00 %
 
-Rigorous experimental evaluation in AMD Vivado 2025.2 targeting an industrial Xilinx Artix-7 FPGA (`xc7a35tcpg236-1`) across a **50-seed Monte Carlo statistical ensemble** demonstrates:
-1. **48.23% $\pm$ 2.12% reduction in Weighted Switching Activity (WSA)** compared to standard LFSR ($4464.7 \pm 183.2$ vs. $8637.5 \pm 438.6$ transitions), and a **24.10% improvement over Abu-Issa BS-LFSR** ($6551.6 \pm 316.5$ transitions).
-2. **44.0% reduction in peak single-cycle transitions** (28 vs. 50 transitions).
-3. **100.0% fault coverage (12/12)** verified across both primary outputs and deep internal gate-level netlist nodes (carry-16 adder chain, barrel shifter stage-2 multiplexers, and comparator sign flags).
-4. **Vector-based Switching Activity Interchange Format (SAIF)** power extraction confirming 88 mW dynamic power under full test vector activity, fitting comfortably within 873 LUTs (4.20%) and 91 user package I/Os ($\le 106$ pin package limit).
+**AWA:**
+Injected : 100
+Detected : 100
+Missed   : 0
+Coverage : 100.00 %
 
----
-
-## 1. Introduction & Research Gap
-
-Pseudo-random BIST is indispensable for safety-critical automotive, aerospace, and IoT edge processors. However, conventional LFSR architectures feed independent Bernoulli random variables into the execution datapath. In a 32-bit execution core, rapid opcode and operand toggling simultaneously activates adder carry propagation networks, barrel shifter multiplexer arrays, and comparator logic trees—conditions that never occur in structured software execution.
-
-### Limitations of Prior Work
-- **Generic Scan BIST (Abu-Issa et al., TVLSI 2012)**: Bit-swapping LFSRs reduce adjacent bit transitions, but assume all CUT inputs have identical logical significance. When applied to an ALU, opcode lines toggle randomly every cycle, forcing complete functional reconfiguration.
-- **Toy Evaluators**: Literature predominantly targets 8-bit demonstration ALUs or generic ISCAS-85/89 benchmarks without semantic datapath structure.
-- **Lack of Deep Fault Grading**: Most published BIST papers test only primary output pins, ignoring whether intermediate internal carry chains or barrel-shifter multiplexers are excited and propagated.
-- **Vectorless Power Guesses**: Prior publications frequently report spreadsheet estimations rather than vector-annotated SAIF physical power reports.
-
----
-
-## 2. AWA-LP-BIST Architecture & Mathematical Foundations
-
-### 2.1 Maximal-Length Characteristic Polynomial
-Both the 32-bit pattern generator and the 32-bit parallel MISR utilize the primitive polynomial:
-$$P(x) = x^{32} + x^{22} + x^2 + x + 1$$
-The feedback recurrence relation at clock cycle $t$ is:
-$$f(t) = R_{31}(t) \oplus R_{21}(t) \oplus R_1(t) \oplus R_0(t)$$
-
-### 2.2 Workload-Aware Instruction Profiling
-Real RISC-V workloads (Dhrystone, CoreMark) exhibit non-uniform execution profiles:
-- Arithmetic (`ADD`, `SUB`): ~50%
-- Logic (`AND`, `OR`, `XOR`): ~25%
-- Shifts (`SLL`, `SRL`, `SRA`): ~12.5%
-- Comparisons (`SLT`, `SLTU`): ~12.5%
-
-The synthesizable Weighted Opcode Mapper (WOM) samples high-entropy LFSR entropy bits $R_{[7:5]}$ to project uniform pseudo-randomness into the profiled distribution:
-$$\text{Opcode}_{sel} = \begin{cases} 
-\text{Arithmetic (`ADD`/`SUB`)} & \text{if } R_{[7:6]} = 2'b00 \lor 2'b01 \quad (50.0\%) \\
-\text{Logic (`AND`/`OR`/`XOR`)} & \text{if } R_{[7:6]} = 2'b10 \quad (25.0\%) \\
-\text{Shifts (`SLL`/`SRL`/`SRA`)} & \text{if } R_{[7:5]} = 3'b110 \quad (12.5\%) \\
-\text{Comparisons (`SLT`/`SLTU`)} & \text{if } R_{[7:5]} = 3'b111 \quad (12.5\%)
-\end{cases}$$
-
-### 2.3 Burst Phase Clustering
-To prevent high-frequency operational pipeline thrashing, opcode changes are decimated across 4-cycle burst windows:
-$$\text{Opcode}(t) = \text{Opcode}\left(t - (t \bmod 4)\right)$$
-This decimation allows operand vectors to thoroughly explore internal sub-block paths without repeatedly discharging the main operational multiplexer trees.
-
-### 2.4 Interleaved Bank Bit-Swapping (IB-BS)
-The 32-bit operand inputs ($A$ and $B$) undergo interleaved bank bit-swapping controlled by sub-cycle timing:
-- **Even Cycles ($t \equiv 0 \pmod 2$)**: Update Bank $A_{[15:0]}$ with swapped bits; freeze Bank $A_{[31:16]}$. Update Bank $B_{[31:16]}$; freeze Bank $B_{[15:0]}$.
-- **Odd Cycles ($t \equiv 1 \pmod 2$)**: Update Bank $A_{[31:16]}$ with swapped bits; freeze Bank $A_{[15:0]}$. Update Bank $B_{[15:0]}$; freeze Bank $B_{[31:16]}$.
-
-Swapping is governed by:
-$$S_{2i}(t) = \begin{cases} R_{2i+1}(t) & \text{if } C_{swap}(t) = 1 \\ R_{2i}(t) & \text{if } C_{swap}(t) = 0 \end{cases}, \quad
-S_{2i+1}(t) = \begin{cases} R_{2i}(t) & \text{if } C_{swap}(t) = 1 \\ R_{2i+1}(t) & \text{if } C_{swap}(t) = 0 \end{cases}$$
-where $C_{swap}(t) = R_0(t) \oplus \text{counter}_{[1]}(t)$.
-
-### 2.5 Response Compaction & Aliasing Probability
-The parallel 32-bit MISR compacts the 32-bit response vector $Z(t)$ at each test cycle:
-$$M(t+1) = \{M_{[30:0]}(t), f_{MISR}(t)\} \oplus Z(t)$$
-For test length $L = 255$ patterns and signature register length $k = 32$, the theoretical aliasing probability is:
-$$P_{alias} = \frac{2^{L-k} - 1}{2^L - 1} \approx 2^{-k} = 2^{-32} \approx 2.328 \times 10^{-10}$$
-
----
-
-## 3. Quantitative Experimental Results
-
-All experiments were executed using **AMD Vivado 2025.2** targeting the **Xilinx Artix-7 FPGA (`xc7a35tcpg236-1`)** at 100 MHz reference clock ($T = 10\text{ ns}$).
-
-### Table 1: 50-Seed Monte Carlo Switching Activity Comparison
-
-| Benchmark / Architecture Parameter | 1. Baseline Standard LFSR | 2. Abu-Issa BS-LFSR (TVLSI '12) | 3. Proposed AWA-LP-BIST | Improvement vs. Baseline | Improvement vs. Abu-Issa |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Target Circuit Under Test (CUT)** | 32-bit RV32I ALU | 32-bit RV32I ALU | 32-bit RV32I ALU | Identical | Identical |
-| **Applied Patterns per Run** | 255 patterns | 255 patterns | 255 patterns | 0% penalty | 0% penalty |
-| **Workload Model** | Uniform pseudo-random | Uniform pseudo-random | CoreMark / Dhrystone | ISA-aware | ISA-aware |
-| **Seed 1 Calibration WSA** | 8,750 | 6,464 | **4,264** | **-51.27%** | **-34.03%** |
-| **Peak Single-Cycle Transitions** | 50 transitions | 50 transitions | **28 transitions** | **-44.00%** | **-44.00%** |
-| **50-Seed Monte Carlo Mean WSA ($\mu$)** | **8,637.5** | **6,551.6** | **4,464.7** | **-48.23%** | **-24.10%** |
-| **Standard Deviation ($\sigma$)** | $\pm 438.6$ | $\pm 316.5$ | $\pm 183.2$ | $\mathbf{2.39\times}$ **tighter variance** | $1.73\times$ tighter variance |
-| **95% Confidence Interval** | $[8516.1, 8758.9]$ | $[6464.1, 6639.1]$ | $[4414.1, 4515.3]$ | Statistical significance $p < 0.0001$ | $p < 0.0001$ |
-| **Calibrated Golden Signature** | `32'ha03133e1` | `32'hdeed1b06` | `32'h409b4a9d` | Verified Match | Verified Match |
-
----
-
-### Table 2: Deep Gate-Level & Primary Output Fault Grading Matrix
-
-| Test Case | Target Fault Site | Netlist Structural Location | Fault Type | Faulty Signature | Golden Signature | Verdict |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **TC-0** | Golden Circuit | All nets fault-free | Nominal | `32'h409b4a9d` | `32'h409b4a9d` | `PASS=1` (Nominal) |
-| **TC-1** | Output Bit 0 (LSB) | Primary Output `result[0]` | Stuck-At-0 | `32'h37566298` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-2** | Output Bit 0 (LSB) | Primary Output `result[0]` | Stuck-At-1 | `32'hd7283738` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-3** | Output Bit 15 (Mid) | Primary Output `result[15]` | Stuck-At-0 | `32'h4f1aaa85` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-4** | Output Bit 15 (Mid) | Primary Output `result[15]` | Stuck-At-1 | `32'h3a16a611` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-5** | Output Bit 31 (MSB) | Primary Output `result[31]` | Stuck-At-0 | `32'h256f2ec4` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-6** | Output Bit 31 (MSB) | Primary Output `result[31]` | Stuck-At-1 | `32'hd5500414` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-7** | **Adder Carry Chain** | **Internal Net: `carry[16]`** | **Stuck-At-0** | `32'hd158aba8` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-8** | **Adder Carry Chain** | **Internal Net: `carry[16]`** | **Stuck-At-1** | `32'h85be2fe7` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-9** | **Barrel Shifter MUX** | **Internal Net: `stage2[4]`** | **Stuck-At-0** | `32'hbae2bb8e` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-10**| **Barrel Shifter MUX** | **Internal Net: `stage2[4]`** | **Stuck-At-1** | `32'hc0022bf1` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-11**| **Comparator Logic** | **Internal Net: `comp_sign`** | **Stuck-At-0** | `32'h4fae71f7` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **TC-12**| **Comparator Logic** | **Internal Net: `comp_sign`** | **Stuck-At-1** | `32'hcc6fa451` | `32'h409b4a9d` | **DETECTED** (`PASS=0`) |
-| **Summary**| **Overall Fault Coverage** | **Primary + Deep Internal Gates** | — | — | — | **100.0% (12/12 Detected)** |
-
----
-
-### Table 3: Vivado SAIF Vector-Based Power Analysis & FPGA Implementation
-
-*Target Device: AMD Xilinx Artix-7 `xc7a35tcpg236-1` | Operating Frequency: 100 MHz ($T = 10\text{ ns}$)*
-
-| Resource / Parameter | Used | Available in Device | Utilization (%) | Notes |
-| :--- | :---: | :---: | :---: | :--- |
-| **Slice LUTs (Logic)** | **873** | 20,800 | **4.20%** | Low overhead |
-| **Slice Registers (FFs)** | **266** | 41,600 | **0.64%** | Minimal state overhead |
-| **CARRY4 Chains** | **29** | 8,150 | **0.36%** | High speed arithmetic |
-| **Package User I/O Pins** | **91** | **106** | **85.85%** | **Fits within CPG236 boundary ($\le 106$)** |
-| **Global Clock Buffers (BUFG)** | 1 | 32 | 3.13% | Single global domain |
-| **Worst Negative Slack (WNS)** | -1.698 ns @ 100 MHz / **+0.802 ns @ 80 MHz** | — | — | Meets timing cleanly at 80 MHz (Speed Grade -1) |
-| **Maximum Operating Frequency ($F_{max}$)** | **85.48 MHz** | — | — | $10.0\text{ ns} + 1.698\text{ ns} = 11.698\text{ ns}$ physical critical path |
-| **Static Power ($P_{static}$)** | **0.070 W (70 mW)** | — | — | Baseline quiescent leakage |
-| **Dynamic Power ($P_{dynamic}$)** | **0.088 W (88 mW)** | — | — | **SAIF Vector-Annotated ($P_{dyn}$)** |
-| **Total On-Chip Power** | **0.158 W (158 mW)** | — | — | Vector-annotated simulation |
-| **Junction Temperature ($T_j$)** | **$25.8^\circ\text{C}$** | $85.0^\circ\text{C}$ Max | Safe Margin | Zero thermal runaway risk |
-
-#### Hierarchical Power Distribution
-- Top-Level Design (`bist_top`): 88 mW
-  - Low-Transition Pattern Generator (`u_lfsr`): 31 mW
-    - Weighted Opcode Mapper (`u_wom`): 10 mW
-  - Real-Time Hardware WSA Monitor (`u_wsa`): 12 mW
-  - 32-bit Parallel MISR Compactor (`u_misr`): 2 mW
-  - Circuit Under Test & Fault Injector (`u_alu` + `u_inj`): 43 mW
-
----
-
-### Table 4: State-of-the-Art Literature Comparison
-
-| Feature / Metric | Abu-Issa (TVLSI 2012) | Girao et al. (ISCAS 2017) | Zorian et al. (IEEE ITC) | **Proposed AWA-LP-BIST** |
-| :--- | :---: | :---: | :---: | :---: |
-| **Target CUT Architecture** | Generic Scan Chains | ISCAS Benchmark Gates | General Logic | **32-Bit RISC-V (RV32I) ALU** |
-| **ISA / Workload Awareness** | No (Uniform pseudo-random) | No | No | **Yes (CoreMark / Dhrystone WOM)** |
-| **Switching Activity Reduction** | ~24% (Measured here: 24.10%) | ~35% | ~30% | **48.23% $\pm$ 2.12% (50-Seed MC)** |
-| **Peak Transition Suppression** | 0% (Peak = 50) | ~20% | ~25% | **44.0% Reduction (28 vs 50)** |
-| **Internal Gate Fault Coverage** | Not evaluated | Spot net injections | Standard stuck-at | **100% (12/12 Internal + Output)** |
-| **Power Measurement Method** | Formulaic estimate | Vectorless tool | Vectorless estimate | **Vector-Based SAIF Annotation** |
-| **FPGA Physical Validation** | None (Simulation only) | None | ASIC only | **Fully Implemented on Artix-7** |
-| **Test Time Penalty** | 0% | Up to 15% extra cycles | Scan shift overhead | **0% Penalty (Strict 255 cycles)** |
-
----
-
-## 4. Key Reviewer Takeaways & Contributions
-
-1. **First ISA-Aware Low-Power BIST for RISC-V**: We address the fundamental gap in pseudo-random BIST by correlating pattern generation with real execution semantics (WOM burst clustering), cutting switching activity nearly in half.
-2. **True Statistical Rigor**: Rather than quoting a single lucky seed, we provide 50-seed Monte Carlo distributions ($p < 0.0001$), proving stability across all random initializations.
-3. **Deep Gate-Level Observability**: We prove that low-transition testing does not compromise fault detection across deep internal nets (carry chains, barrel shifter stages, comparator logic).
-4. **Physical FPGA Turnkey Proof**: The design passes physical Place & Route on Artix-7 `xc7a35tcpg236-1` with 91 I/O pins, complete SAIF vector power validation, and zero missing nets.
+## E. SANITY CHECKS
+PASS/FAIL:
+- no compilation errors: PASS
+- no elaboration errors: PASS
+- no RTL/testbench coupling: PASS
+- no SESSION=NONE contamination: PASS
+- all nominal runs completed: PASS
+- all fault runs completed: PASS
+- mean <= max for all windows: PASS
+- percentile <= max for all windows: PASS
+- PA activation logic correct: PASS
+- PA deactivation logic correct: PASS
+- hysteresis correct: PASS
+- PA active cycles valid: PASS
+- counters reset correctly: PASS
+- switching totals isolated from fault campaign: PASS
+- nominal functional checking valid: PASS
+- fault detection accounting valid: PASS
+- Standard and AWA fault sanity test valid: PASS
